@@ -1,0 +1,1 @@
+employeeIDLength = 6
