@@ -7,7 +7,8 @@ class SignInUseCase(UseCase):
         self._repository = repository
 
     def execute(self, input: str):
-        if str.count != employeeIDLength:
-            raise "Must enter a valid id"
+        if len(input) != employeeIDLength:
+            print(f'Received {len(input)} characters, expected {employeeIDLength}')
+            raise f"Must enter a valid id"
         
         self._repository.signIn(input)

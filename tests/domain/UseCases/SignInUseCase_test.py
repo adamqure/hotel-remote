@@ -1,7 +1,12 @@
 from domain.UseCases.SignInUseCase import SignInUseCase
+from domain.Repositories.AuthenticationRepository import AuthenticationRepository
+
+class MockAuthenticationRepository(AuthenticationRepository):
+    def signIn(self, code: str):
+        return
 
 def testSignInUseCaseWithEmptyStringThrowsError():
-    useCase = SignInUseCase()
+    useCase = SignInUseCase(MockAuthenticationRepository())
     
     try:
         useCase.execute("")
@@ -10,7 +15,7 @@ def testSignInUseCaseWithEmptyStringThrowsError():
         assert(True)
 
 def testSignInUseCaseWith5CharactersThrowsError():
-    useCase = SignInUseCase()
+    useCase = SignInUseCase(MockAuthenticationRepository())
 
     try:
         useCase.execute("12345")
@@ -19,7 +24,7 @@ def testSignInUseCaseWith5CharactersThrowsError():
         assert(True)
 
 def testSignInUseCaseWith7CharactersThrowsError():
-    useCase = SignInUseCase()
+    useCase = SignInUseCase(MockAuthenticationRepository())
 
     try:
         useCase.execute("1234567")
@@ -28,7 +33,7 @@ def testSignInUseCaseWith7CharactersThrowsError():
         assert(True)
 
 def testSignInUseCaseWith6CharactersPasses():
-    useCase = SignInUseCase()
+    useCase = SignInUseCase(MockAuthenticationRepository())
 
     try:
         useCase.execute("123456")
