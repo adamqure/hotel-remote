@@ -2,16 +2,12 @@ import sys
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from domain.Repositories.AuthenticationRepository import AuthenticationRepository
+from data.Repositories.ConcreteAuthenticationRepository import ConcreteAuthenticationRepository
 from presentation.Authentication.SignInViewModel import SignInViewModel
 from ui.Authentication.SignInView import SignInView
 
-class MockAuthenticationRepository(AuthenticationRepository):
-    def signIn(self, code: str):
-        return
-
 class stackedExample(QWidget):
-    signInView = SignInView(viewModel=SignInViewModel(authRepository=MockAuthenticationRepository()))
+    signInView = SignInView(viewModel=SignInViewModel(authRepository=ConcreteAuthenticationRepository()))
 
     def __init__(self):
         super(stackedExample, self).__init__()
