@@ -14,3 +14,6 @@ class ConcreteEmployeeRepository(EmployeeRepository):
     
     def deleteEmployee(self, id: str):
         return self._dataSource.deleteEmployee(id)
+
+    def updateEmployee(self, employee: Employee):
+        return self._dataSource.updateEmployee(employee)

@@ -55,7 +55,17 @@ class SQLiteEmployeeDataAccessObject(EmployeeDataAccessObject):
             connection.close()  
 
     def updateEmployee(self, employee: Employee):
-        pass
+        connection = sqlite3.connect(DB_PATH)
+        try:
+            cursor = connection.cursor()
+            updateCommand = f"UPDATE Employee SET id = ?, name = ?, emailAddress = ?, employeeID = ?, position = ?, roles = ? WHERE id = ?"
+            cursor.execute(updateCommand, (str(employee._id), employee._name, employee._emailAddress, employee.employeeID, employee.position, jsonpickle.encode(employee.getRoles()), str(employee._id)))
+            connection.commit()
+        except Exception as e:
+            print(f"Failed to update employee: {employee}")
+            raise e
+        finally:
+            connection.close()
 
     def addEmployee(self, employee: Employee):
         connection = sqlite3.connect(DB_PATH)

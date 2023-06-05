@@ -10,3 +10,6 @@ class EmployeeRepository:
 
     def deleteEmployee(self, id: str):
         pass
+
+    def updateEmployee(self, employee: Employee):
+        pass

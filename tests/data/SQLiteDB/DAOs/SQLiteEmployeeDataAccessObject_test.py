@@ -164,3 +164,41 @@ def testNonExistingEmployeeRaisesException(clearEmployeeTable):
         assert(False)
     except:
         assert(True)
+
+def testUpdateExistingEmployeeSuccessful(clearEmployeeTable):
+    dao = SQLiteEmployeeDataAccessObject()
+
+    newEmployee = Employee(
+        name="Test",
+        emailAddress="test@test.com",
+        position="Test Position",
+        roles=[EmployeeRole("TestRole")],
+        employeeID="123456"
+    )
+
+    try:
+        dao.addEmployee(newEmployee)
+        newEmployee.addRole(EmployeeRole("Extra Role"))
+        dao.updateEmployee(newEmployee)
+        updatedEmployee = dao.getEmployee(newEmployee.employeeID)
+        assert(len(updatedEmployee.getRoles()) == 2)
+    except:
+        assert(False)
+
+def testUpdateNonExistingEmployeeRaisesException(clearEmployeeTable):
+    dao = SQLiteEmployeeDataAccessObject()
+
+    newEmployee = Employee(
+        name="Test",
+        emailAddress="test@test.com",
+        position="Test Position",
+        roles=[EmployeeRole("TestRole")],
+        employeeID="123456"
+    )
+
+    try:
+        dao.updateEmployee(newEmployee)
+        updatedEmployee = dao.getEmployee(newEmployee.employeeID)
+        assert(False)
+    except:
+        assert(True)

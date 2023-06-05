@@ -25,3 +25,6 @@ class Employee(Person):
 
     def getRoles(self):
         return self._roles
+    
+    def addRole(self, role: EmployeeRole):
+        self._roles.append(role)
