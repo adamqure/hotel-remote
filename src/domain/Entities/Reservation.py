@@ -1,5 +1,7 @@
 import uuid
+from domain.Entities.RoomCharge import RoomCharge
 from domain.Entities.States.ReservationState import ReservationState
+from domain.Entities.States.RoomState import RoomState
 
 class Reservation:
     def __init__(self, startDate, endDate, numberOfGuests, room, roomCharges = []):
@@ -12,14 +14,14 @@ class Reservation:
         self.confirmationNumber = str(id)
         self.state = ReservationState.DRAFT
 
-    def addRoomCharge(self, charge):
-        pass
+    def addRoomCharge(self, charge: RoomCharge):
+        self.roomCharges.add(charge)
 
-    def removeRoomCharge(self, charge):
-        pass
+    def removeRoomCharge(self, charge: RoomCharge):
+        self.roomCharges.remove(charge)
 
     def calculateTotalInvoice(self):
         pass
 
-    def updateState(self, newState):
-        pass
+    def updateState(self, newState: RoomState):
+        self.state = newState

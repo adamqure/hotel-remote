@@ -9,3 +9,6 @@ class EmployeeDataSource:
 
     def getEmployeeWithID(self, id: str) -> Employee:
         return self._dao.getEmployee(id)
+    
+    def getAllEmployees(self) -> list[Employee]:
+        return self._dao.getAllEmployees()

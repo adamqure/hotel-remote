@@ -6,5 +6,5 @@ class Room:
         self.floor = floor
         self._state = RoomState.AVAILABLE
 
-    def updateState(newState):
-        pass
+    def updateState(self, newState: RoomState):
+        self._state = newState
