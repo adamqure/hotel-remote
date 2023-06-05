@@ -34,7 +34,21 @@ class SQLiteEmployeeDataAccessObject(EmployeeDataAccessObject):
         try:
             cursor = connection.cursor()
             selectCommand = f"SELECT * FROM Employee"
-            
+            cursor.execute(selectCommand)
+            dataObjects = cursor.fetchall()
+            result: list[Employee] = []
+            for employeeData in dataObjects:
+                result.append(
+                    Employee(
+                        name=employeeData[1],
+                        emailAddress=employeeData[2],
+                        position=employeeData[4],
+                        roles=jsonpickle.decode(employeeData[5]),
+                        employeeID=employeeData[3],
+                        id=employeeData[0]
+                    )
+                )
+            return result
         except:
             raise f"Failed to fetch employee list"
         finally:        

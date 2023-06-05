@@ -42,6 +42,43 @@ def newEmployee():
     finally:
         connection.close()
 
+@pytest.fixture
+def newEmployees():
+    connection = sqlite3.connect(DB_PATH)
+    try:
+        cursor = connection.cursor()
+        newEmployees = []
+        newEmployees.append(
+            Employee(
+                name="Test",
+                emailAddress="test@test.com",
+                position="Test Position",
+                roles=[EmployeeRole("TestRole")],
+                employeeID="123456"
+            )
+        )
+
+        newEmployees.append(
+            Employee(
+                name="Test2",
+                emailAddress="test@test.com",
+                position="Test Position",
+                roles=[EmployeeRole("TestRole")],
+                employeeID="111111"
+            )
+        )
+
+        for newEmployee in newEmployees:
+            command = f"INSERT INTO Employee (id, name, emailAddress, employeeID, position, roles) VALUES (?, ?, ?, ?, ?, ?)"
+            cursor.execute(command, (str(newEmployee._id), newEmployee._name, newEmployee._emailAddress, newEmployee.employeeID, newEmployee.position, jsonpickle.encode(newEmployee.getRoles())))
+            connection.commit()
+
+    except Exception as e:
+        print("Failed to create a new employee")
+        print(e)
+    finally:
+        connection.close()
+
 def testFetchEmployeeFoundReturnsProperEmployee(clearEmployeeTable, newEmployee):
     dao = SQLiteEmployeeDataAccessObject()
     result = dao.getEmployee("123456")
@@ -54,3 +91,16 @@ def testFetchEmployeeNotExistsRaisesException():
         assert(False)
     except:
         assert(True)
+
+def testFetchAllEmployeesReturnsEmployee(clearEmployeeTable, newEmployee):
+    dao = SQLiteEmployeeDataAccessObject()
+    result = dao.getAllEmployees()
+    assert(len(result) == 1)
+    assert(result[0].employeeID == "123456")
+
+def testFetchAllEmployeesReturnsMultipleEmployees(clearEmployeeTable, newEmployees):
+    dao = SQLiteEmployeeDataAccessObject()
+    result = dao.getAllEmployees()
+    assert(len(result) == 2)
+    assert(result[0].employeeID == "123456")
+    assert(result[1].employeeID == "111111")
