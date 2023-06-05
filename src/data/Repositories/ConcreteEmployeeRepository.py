@@ -8,3 +8,9 @@ class ConcreteEmployeeRepository(EmployeeRepository):
         
     def getEmployeeList(self) -> list[Employee]:
         return self._dataSource.getAllEmployees()
+    
+    def addEmployee(self, newEmployee: Employee):
+        return self._dataSource.addEmployee(newEmployee)
+    
+    def deleteEmployee(self, id: str):
+        return self._dataSource.deleteEmployee(id)
