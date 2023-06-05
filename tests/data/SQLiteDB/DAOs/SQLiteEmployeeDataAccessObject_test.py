@@ -104,3 +104,35 @@ def testFetchAllEmployeesReturnsMultipleEmployees(clearEmployeeTable, newEmploye
     assert(len(result) == 2)
     assert(result[0].employeeID == "123456")
     assert(result[1].employeeID == "111111")
+
+def testAddExistingEmployeeRaisesException(clearEmployeeTable, newEmployee):
+    dao = SQLiteEmployeeDataAccessObject()
+    newEmployee = Employee(
+            name="Test",
+            emailAddress="test@test.com",
+            position="Test Position",
+            roles=[EmployeeRole("TestRole")],
+            employeeID="123456"
+        )
+    try:
+        dao.addEmployee(newEmployee)
+        assert(False)
+    except:
+        assert(True)
+
+def testAddNewEmployeeSuccessful(clearEmployeeTable):
+    dao = SQLiteEmployeeDataAccessObject()
+    newEmployee = Employee(
+            name="Test",
+            emailAddress="test@test.com",
+            position="Test Position",
+            roles=[EmployeeRole("TestRole")],
+            employeeID="123456"
+        )
+    try:
+        dao.addEmployee(newEmployee)
+        result = dao.getAllEmployees()
+        assert(len(result) == 1)
+        result[0]._id == newEmployee._id
+    except:
+        assert(False)
