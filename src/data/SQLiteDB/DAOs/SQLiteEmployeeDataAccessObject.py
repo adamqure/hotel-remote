@@ -69,4 +69,14 @@ class SQLiteEmployeeDataAccessObject(EmployeeDataAccessObject):
         pass
 
     def addEmployee(self, employee: Employee):
-        pass
+        connection = sqlite3.connect(DB_PATH)
+        try:
+            cursor = connection.cursor()
+            command = f"INSERT INTO Employee (id, name, emailAddress, employeeID, position, roles) VALUES (?, ?, ?, ?, ?, ?)"
+            cursor.execute(command, (str(employee._id), employee._name, employee._emailAddress, employee.employeeID, employee.position, jsonpickle.encode(employee.getRoles())))
+            connection.commit()
+        except Exception as e:
+            print(f"Failed to create the new user")
+            raise e
+        finally:
+            connection.close()
