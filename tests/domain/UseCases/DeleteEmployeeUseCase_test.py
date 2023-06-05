@@ -10,13 +10,10 @@ class MockEmployeeRepository(EmployeeRepository):
         return self.employees
     
     def addEmployee(self, newEmployee: Employee):
-        if newEmployee._id == "Existing":
-            raise f"Employee already exists"
-        
         self.employees.append(newEmployee)
 
     def deleteEmployee(self, id: str):
-        employee = next(employee for employee in self.employees if employee._id == id)
+        employee = next(employee for employee in self.employees if str(employee._id) == id)
         if employee == None:
             raise f"Employee doesn't exist"
         else:
@@ -69,7 +66,6 @@ def testDeleteWithInvalidInputRaisesException():
 
 def testDeleteExistingEmployeeSuccessful():
     repository = MockEmployeeRepository()
-    useCase = DeleteEmployeeUseCase(repository)
 
     employee = Employee(
         name="Test",
@@ -78,6 +74,9 @@ def testDeleteExistingEmployeeSuccessful():
         roles=[]
     )
 
+    repository.addEmployee(employee)
+    useCase = DeleteEmployeeUseCase(repository)
+
     manager = Employee(
         name="Test",
         emailAddress="test@test.com",
@@ -85,7 +84,6 @@ def testDeleteExistingEmployeeSuccessful():
         roles=[EmployeeManagement()]
     )
 
-    repository.addEmployee(employee)
     assert(len(repository.getEmployeeList()) == 1)
 
     try:
