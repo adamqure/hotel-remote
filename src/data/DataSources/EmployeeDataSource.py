@@ -12,9 +12,3 @@ class EmployeeDataSource:
     
     def getAllEmployees(self) -> list[Employee]:
         return self._dao.getAllEmployees()
-    
-    def addEmployee(self, employee: Employee):
-        return self._dao.addEmployee(employee)
-
-    def deleteEmployee(self, id: str):
-        self._dao.deleteEmployee(id)

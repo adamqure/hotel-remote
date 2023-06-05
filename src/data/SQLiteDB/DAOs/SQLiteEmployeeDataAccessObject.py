@@ -54,6 +54,17 @@ class SQLiteEmployeeDataAccessObject(EmployeeDataAccessObject):
         finally:        
             connection.close()  
 
+    def deleteEmployee(self, id: str):
+        connection = sqlite3.connect(DB_PATH)
+        try:
+            cursor = connection.cursor()
+            delete = f"DELETE * FROM Employee WHERE employeeID = {id}"
+            
+        except:
+            raise f"Failed to delete employee with id {id}"
+        finally:        
+            connection.close()  
+
     def updateEmployee(self, employee: Employee):
         pass
 
@@ -65,20 +76,7 @@ class SQLiteEmployeeDataAccessObject(EmployeeDataAccessObject):
             cursor.execute(command, (str(employee._id), employee._name, employee._emailAddress, employee.employeeID, employee.position, jsonpickle.encode(employee.getRoles())))
             connection.commit()
         except Exception as e:
-            print(f"Failed to create the new employee")
-            raise e
-        finally:
-            connection.close()
-
-    def deleteEmployee(self, id: str):
-        connection = sqlite3.connect(DB_PATH)
-        try:
-            cursor = connection.cursor()
-            command = f"DELETE FROM Employee WHERE id = \"{id}\";"
-            cursor.execute(command)
-            connection.commit()
-        except Exception as e:
-            print(f"Failed to delete the employee")
+            print(f"Failed to create the new user")
             raise e
         finally:
             connection.close()
