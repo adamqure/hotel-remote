@@ -7,6 +7,3 @@ class EmployeeRepository:
 
     def addEmployee(self, newEmployee: Employee):
         pass
-
-    def deleteEmployee(self, id: str):
-        pass
