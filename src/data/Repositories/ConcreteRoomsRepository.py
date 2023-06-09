@@ -29,3 +29,6 @@ class ConcreteRoomsRepository(RoomsRepository):
 
     def deleteRoom(self, room: Room):
         self._dataSource.deleteRoom(room)
+
+    def updateRoom(self, room: Room):
+        self._dataSource.updateRoom(room)

@@ -4,7 +4,7 @@ from domain.Repositories.RoomsRepository import RoomsRepository
 from domain.UseCases.UseCase import UseCase
 
 
-class CreateRoomUseCase(UseCase):
+class UpdateRoomUseCase(UseCase):
     def __init__(self, repository: RoomsRepository):
         self._repository = repository
         
@@ -17,7 +17,7 @@ class CreateRoomUseCase(UseCase):
         room = args[1]
         
         if any(isinstance(item, RoomAvailabilityManagement) for item in user.getRoles()):
-            return self._repository.createRoom(room)
+            return self._repository.updateRoom(room)
         else:
             print(f'Employee does not have the correct roles to create this information: {input.getRoles()}')
             raise f"Insufficient permissions"

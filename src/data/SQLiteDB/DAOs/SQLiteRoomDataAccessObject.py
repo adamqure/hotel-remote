@@ -81,3 +81,16 @@ class SQLiteRoomDataAccessObject(RoomDataAccessObject):
             print(e)
         finally:
             connection.close()
+
+    def updateRoom(self, newRoom: Room):
+        connection = sqlite3.connect(DB_PATH)
+        try:
+            cursor = connection.cursor()
+            updateCommand = f"UPDATE Room SET number = ?, floor = ?, state = ?, reservedDates = ?, capacity = ? WHERE number = ?"
+            cursor.execute(updateCommand, (newRoom.number, newRoom.floor, newRoom._state.value, jsonpickle.encode(newRoom.reservedDates), newRoom.capacity, newRoom.number))
+            connection.commit()
+        except Exception as e:
+            print(f"Failed to update room: {newRoom}")
+            raise e
+        finally:
+            connection.close()
