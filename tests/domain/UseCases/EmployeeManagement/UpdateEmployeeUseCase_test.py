@@ -2,7 +2,7 @@ from domain.Entities.EmployeeRoles.EmployeeManagement import EmployeeManagement
 from domain.Entities.EmployeeRoles.Housekeeper import Housekeeper
 from domain.Entities.People.Employee import Employee
 from domain.Repositories.EmployeeRepository import EmployeeRepository
-from domain.UseCases.UpdateEmployeeUseCase import UpdateEmployeeUseCase
+from domain.UseCases.EmployeeManagement.UpdateEmployeeUseCase import UpdateEmployeeUseCase
 
 
 class MockEmployeeRepository(EmployeeRepository):

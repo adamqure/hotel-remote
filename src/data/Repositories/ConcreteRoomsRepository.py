@@ -23,3 +23,6 @@ class ConcreteRoomsRepository(RoomsRepository):
     def roomAvailableOnDates(self, room: Room, dates: list[datetime]) -> bool:
         hasReservedRoom = any(x in room.reservedDates for x in dates) or room._state == RoomState.UNAVAILABLE
         return not hasReservedRoom
+    
+    def createRoom(self, room: Room):
+        self._dataSource.createRoom(room)

@@ -68,3 +68,34 @@ def testGetAllRoomsWithNoRoomsReturnsEmptyList(clearRoomsTable):
     dao = SQLiteRoomDataAccessObject()
     result = dao.getAllRooms()
     assert(len(result) == 0)
+
+def testCreateExistingRoomRaisesException(clearRoomsTable, newAvailableRoom):
+    dao = SQLiteRoomDataAccessObject()
+
+    room = Room(
+        number=1,
+        floor=1,
+        state=RoomState.AVAILABLE
+    )
+
+    try:
+        dao.createRoom(room)
+        assert(False)
+    except:
+        assert(True)
+
+def testCreateNewRoomSucceeds(clearRoomsTable):
+    dao = SQLiteRoomDataAccessObject()
+
+    room = Room(
+        number=1,
+        floor=1,
+        state=RoomState.AVAILABLE
+    )
+
+    try:
+        dao.createRoom(room)
+        rooms = dao.getAllRooms()
+        assert(room in rooms)
+    except:
+        assert(False)

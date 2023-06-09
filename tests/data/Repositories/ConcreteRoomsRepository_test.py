@@ -101,3 +101,26 @@ def testGetRoomsWithCapacityReturnsAvailable(clearRoomsTable, roomWith4Capacity)
 def testGetRoomsWithoutCapacityReturnsUnavailable(clearRoomsTable, roomWith4Capacity):
     repository = ConcreteRoomsRepository()
     assert(len(repository.getRoomsWithCapacity(5)) == 0)
+
+def testAlreadyExistingRoomRaisesException(clearRoomsTable, newAvailableRoom):
+    repository = ConcreteRoomsRepository()
+    
+    try:
+        repository.createRoom(Room(
+            number=1,
+            floor=1,
+            state=RoomState.AVAILABLE
+        ))
+        assert(False)
+    except:
+        assert(True)
+
+def testNonExistingRoomIsAdded(clearRoomsTable):
+    newRoom = Room(
+        number=1,
+        floor=1,
+        state=RoomState.AVAILABLE
+    )
+    repository = ConcreteRoomsRepository()
+    repository.createRoom(newRoom)
+    assert(newRoom in repository.getRoomList())

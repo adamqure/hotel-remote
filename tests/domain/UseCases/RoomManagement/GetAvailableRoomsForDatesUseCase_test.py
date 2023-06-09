@@ -4,7 +4,7 @@ from domain.Entities.People.Employee import Employee
 from domain.Entities.Room import Room
 from domain.Entities.States.RoomState import RoomState
 from domain.Repositories.RoomsRepository import RoomsRepository
-from domain.UseCases.GetAvailableRoomsForDatesUseCase import GetAvailableRoomsForDatesUseCase
+from domain.UseCases.RoomManagement.GetAvailableRoomsForDatesUseCase import GetAvailableRoomsForDatesUseCase
 
 
 class MockRoomsRepository(RoomsRepository):
