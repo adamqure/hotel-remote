@@ -3,27 +3,21 @@ from domain.Entities.EmployeeRoles.RoomAvailabilityManagement import RoomAvailab
 from domain.Entities.People.Employee import Employee
 from domain.Entities.Room import Room
 from domain.Repositories.RoomsRepository import RoomsRepository
-from domain.UseCases.RoomManagement.CreateRoomUseCase import CreateRoomUseCase
+from domain.UseCases.RoomManagement.DeleteRoomUseCase import DeleteRoomUseCase
 
 
 class MockRoomsRepository(RoomsRepository):
     rooms: list[Room] = []
     def getRoomList(self) -> list[Room]:
         return self.rooms
-    
-    def getRoomsAvailableForDates(self, dates: list[datetime]) -> list[Room]:
-        pass
 
-    def getRoomsWithCapacity(self, capacity: int) -> list[Room]:
-        return filter(lambda room: room.capacity >= capacity, self.rooms)
-    
-    def createRoom(self, room: Room):
+    def deleteRoom(self, room: Room):
         if room in self.rooms:
-            raise f"Room already exists: {room}"
+            self.rooms.remove(room)
+        else:
+            raise f"Room does not exist: {room}"
         
-        self.rooms.append(room)
-
-def testCreateRoomWithoutPermissionsRaisesException():
+def testDeleteRoomWithoutPermissionsRaisesException():
     user = Employee(
         name="Test",
         emailAddress="test@test.com",
@@ -34,13 +28,13 @@ def testCreateRoomWithoutPermissionsRaisesException():
     room = Room(1, 1)
     
     try:
-        useCase = CreateRoomUseCase(MockRoomsRepository())
+        useCase = DeleteRoomUseCase(MockRoomsRepository())
         useCase.execute(user, room)
         assert(False)
     except:
         assert(True)
 
-def testCreateRoomWithoutEnoughParametersRaisesException():
+def testDeleteRoomWithoutEnoughParametersRaisesException():
     user = Employee(
         name="Test",
         emailAddress="test@test.com",
@@ -49,13 +43,13 @@ def testCreateRoomWithoutEnoughParametersRaisesException():
     )
     
     try:
-        useCase = CreateRoomUseCase(MockRoomsRepository())
+        useCase = DeleteRoomUseCase(MockRoomsRepository())
         useCase.execute(user)
         assert(False)
     except:
         assert(True)
 
-def testCreateRoomAlreadyExistsRaisesException():
+def testDeleteRoomAlreadyExistsIsDeleted():
     repository = MockRoomsRepository()
     repository.rooms.append(Room(1, 1))
 
@@ -68,18 +62,22 @@ def testCreateRoomAlreadyExistsRaisesException():
 
     room = Room(1, 1)
 
-    useCase = CreateRoomUseCase(repository)
+    useCase = DeleteRoomUseCase(repository)
 
     try:
         useCase.execute(user, room)
-        assert(False)
+        assert(len(repository.getRoomList()) == 0)
     except:
-        assert(True)
+        assert(False)
 
-def testCreateRoomSuccessful():
-    repository = MockRoomsRepository()
-    repository.rooms.clear()
-
+def testDeleteNonExistingRoomRaisesException():
+    user = Employee(
+        name="Test",
+        emailAddress="test@test.com",
+        position="Test",
+        roles=[RoomAvailabilityManagement()]
+    )
+    
     user = Employee(
         name="Test",
         emailAddress="test@test.com",
@@ -89,10 +87,10 @@ def testCreateRoomSuccessful():
 
     room = Room(1, 1)
 
-    useCase = CreateRoomUseCase(repository)
+    useCase = DeleteRoomUseCase(MockRoomsRepository())
 
     try:
         useCase.execute(user, room)
-        assert(True)
-    except:
         assert(False)
+    except:
+        assert(True)

@@ -10,3 +10,6 @@ class RoomDataAccessObject:
 
     def createRoom(self, room: Room):
         pass
+
+    def deleteRoom(self, room: Room):
+        pass
