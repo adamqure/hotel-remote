@@ -1,0 +1,57 @@
+import sqlite3
+
+import jsonpickle
+from data.DAOs.RoomDataAccessObject import RoomDataAccessObject
+from data.SQLiteDB.SQLiteDBConstants import DB_PATH
+from domain.Entities.Room import Room
+from domain.Entities.States.RoomState import RoomState
+
+class SQLiteRoomDataAccessObject(RoomDataAccessObject):
+    def getRoomByNumber(self, number: int) -> Room:
+        connection = sqlite3.connect(DB_PATH)
+        try:
+            cursor = connection.cursor()
+            selectCommand = f"SELECT * FROM Room WHERE number = ?;"
+            cursor.execute(selectCommand, (str(number)))
+            result = cursor.fetchall()
+            if len(result) == 0:
+                raise f"Failed to find room that matches number {number}"
+            
+            roomData = result[0]
+            room = Room(
+                number=roomData[0],
+                floor=roomData[1],
+                state=RoomState(roomData[2]),
+                reservedDates=jsonpickle.decode(roomData[3]),
+                capacity=roomData[4]
+            )
+
+            return room
+        except Exception as e:
+            raise f"Failed to find room that matches number {number}: {e}"
+        finally:        
+            connection.close()
+
+    def getAllRooms(self) -> list[Room]:
+        connection = sqlite3.connect(DB_PATH)
+        try:
+            cursor = connection.cursor()
+            selectCommand = f"SELECT * FROM Room"
+            cursor.execute(selectCommand)
+            dataObjects = cursor.fetchall()
+            result: list[Room] = []
+            for roomData in dataObjects:
+                result.append(
+                    Room(
+                        number=roomData[0],
+                        floor=roomData[1],
+                        state=RoomState(roomData[2]),
+                        reservedDates=jsonpickle.decode(roomData[3]),
+                        capacity=roomData[4]
+                    )
+                )
+            return result
+        except:
+            raise f"Failed to fetch room list"
+        finally:        
+            connection.close()  
