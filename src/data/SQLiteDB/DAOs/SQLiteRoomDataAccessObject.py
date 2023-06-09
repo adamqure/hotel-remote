@@ -68,3 +68,16 @@ class SQLiteRoomDataAccessObject(RoomDataAccessObject):
             print(e)
         finally:
             connection.close()
+
+    def deleteRoom(self, room: Room):
+        connection = sqlite3.connect(DB_PATH)
+        try:
+            cursor = connection.cursor()
+            command = f"DELETE FROM Room WHERE number = \"{room.number}\";"
+            cursor.execute(command)
+            connection.commit()
+        except Exception as e:
+            print(f"Failed to delete room: {room}")
+            print(e)
+        finally:
+            connection.close()

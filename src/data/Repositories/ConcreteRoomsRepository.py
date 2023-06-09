@@ -26,3 +26,6 @@ class ConcreteRoomsRepository(RoomsRepository):
     
     def createRoom(self, room: Room):
         self._dataSource.createRoom(room)
+
+    def deleteRoom(self, room: Room):
+        self._dataSource.deleteRoom(room)

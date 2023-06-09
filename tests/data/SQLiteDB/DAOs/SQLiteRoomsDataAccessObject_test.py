@@ -99,3 +99,34 @@ def testCreateNewRoomSucceeds(clearRoomsTable):
         assert(room in rooms)
     except:
         assert(False)
+
+def testDeleteExistingRoomSucceeds(clearRoomsTable, newAvailableRoom):
+    dao = SQLiteRoomDataAccessObject()
+
+    room = Room(
+        number=1,
+        floor=1,
+        state=RoomState.AVAILABLE
+    )
+
+    try:
+        dao.deleteRoom(room)
+        rooms = dao.getAllRooms()
+        assert(len(rooms) == 0)
+    except:
+        assert(False)
+
+def testDeleteNonExistingRoomRaisesException(clearRoomsTable):
+    dao = SQLiteRoomDataAccessObject()
+
+    room = Room(
+        number=1,
+        floor=1,
+        state=RoomState.AVAILABLE
+    )
+
+    try:
+        dao.deleteRoom(room)
+        assert(False)
+    except:
+        assert(True)
