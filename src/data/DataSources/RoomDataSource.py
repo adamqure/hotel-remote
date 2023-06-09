@@ -15,3 +15,6 @@ class RoomDataSource:
 
     def deleteRoom(self, room: Room):
         self._dao.deleteRoom(room)
+
+    def updateRoom(self, room: Room):
+        self._dao.updateRoom(room)

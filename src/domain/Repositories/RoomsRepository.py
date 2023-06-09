@@ -17,3 +17,6 @@ class RoomsRepository:
 
     def deleteRoom(self, room: Room):
         pass
+
+    def updateRoom(self, room: Room):
+        pass

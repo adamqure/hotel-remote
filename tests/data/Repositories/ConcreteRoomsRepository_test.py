@@ -154,3 +154,35 @@ def testDeleteExistingRoomSucceeds(clearRoomsTable, newAvailableRoom):
         assert(len(repository.getRoomList()) == 0)
     except:
         assert(False)
+
+def testUpdateNonexistingRoomRaisesException(clearRoomsTable):
+    repository = ConcreteRoomsRepository()
+
+    newRoom = Room(
+        number=1,
+        floor=1,
+        state=RoomState.AVAILABLE
+    )
+
+    try:
+        repository.updateRoom(newRoom)
+        assert(False)
+    except:
+        assert(True)
+
+def testUpdateExistingRoomSucceeds(clearRoomsTable, newAvailableRoom):
+    repository = ConcreteRoomsRepository()
+
+    newRoom = Room(
+        number=1,
+        floor=1,
+        state=RoomState.UNAVAILABLE
+    )
+
+    try:
+        repository.updateRoom(newRoom)
+        room = repository.getRoomList()[0]
+        assert(room.number == newRoom.number)
+        assert(room._state == RoomState.UNAVAILABLE)
+    except:
+        assert(False)
