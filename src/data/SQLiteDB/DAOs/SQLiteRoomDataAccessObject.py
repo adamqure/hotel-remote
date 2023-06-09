@@ -55,3 +55,16 @@ class SQLiteRoomDataAccessObject(RoomDataAccessObject):
             raise f"Failed to fetch room list"
         finally:        
             connection.close()  
+
+    def createRoom(self, newRoom: Room):
+        connection = sqlite3.connect(DB_PATH)
+        try:
+            cursor = connection.cursor()
+            command = f"INSERT INTO Room (number, floor, state, reservedDates, capacity) VALUES (?, ?, ?, ?, ?)"
+            cursor.execute(command, (newRoom.number, newRoom.floor, newRoom._state.value, jsonpickle.encode(newRoom.reservedDates), newRoom.capacity))
+            connection.commit()
+        except Exception as e:
+            print("Failed to create a new room")
+            print(e)
+        finally:
+            connection.close()

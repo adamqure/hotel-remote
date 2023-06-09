@@ -1,7 +1,7 @@
 from domain.Entities.EmployeeRoles.EmployeeManagement import EmployeeManagement
 from domain.Entities.People.Employee import Employee
 from domain.Repositories.EmployeeRepository import EmployeeRepository
-from domain.UseCases.DeleteEmployeeUseCase import DeleteEmployeeUseCase
+from domain.UseCases.EmployeeManagement.DeleteEmployeeUseCase import DeleteEmployeeUseCase
 
 
 class MockEmployeeRepository(EmployeeRepository):

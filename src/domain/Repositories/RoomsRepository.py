@@ -11,3 +11,6 @@ class RoomsRepository:
 
     def getRoomsWithCapacity(self, capacity: int) -> list[Room]:
         pass
+
+    def createRoom(self, room: Room):
+        pass

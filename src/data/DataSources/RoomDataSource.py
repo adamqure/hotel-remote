@@ -9,3 +9,6 @@ class RoomDataSource:
 
     def getAllRooms(self) -> list[Room]:
         return self._dao.getAllRooms()
+    
+    def createRoom(self, room: Room):
+        self._dao.createRoom(room)

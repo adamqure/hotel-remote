@@ -17,3 +17,6 @@ class Room:
             raise f"Date already reserved"
         
         self.reservedDates.append(newDate)
+
+    def __eq__(self, other):
+        return self.number == other.number

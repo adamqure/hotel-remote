@@ -1,4 +1,4 @@
-from domain.UseCases.SignInUseCase import SignInUseCase
+from domain.UseCases.Authentication.SignInUseCase import SignInUseCase
 
 class SignInViewModel:
     def __init__(self, authRepository):

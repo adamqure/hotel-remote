@@ -1,7 +1,7 @@
 from domain.Entities.EmployeeRoles.EmployeeManagement import EmployeeManagement
 from domain.Entities.People.Employee import Employee
 from domain.Repositories.EmployeeRepository import EmployeeRepository
-from domain.UseCases.GetEmployeesUseCase import GetEmployeesUseCase
+from domain.UseCases.EmployeeManagement.GetEmployeesUseCase import GetEmployeesUseCase
 
 class MockEmptyEmployeeRepository(EmployeeRepository):
     def getEmployeeList(self) -> list[Employee]:

@@ -1,4 +1,4 @@
-from domain.UseCases.SignInUseCase import SignInUseCase
+from domain.UseCases.Authentication.SignInUseCase import SignInUseCase
 from domain.Repositories.AuthenticationRepository import AuthenticationRepository
 
 class MockAuthenticationRepository(AuthenticationRepository):
