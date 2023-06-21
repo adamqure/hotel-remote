@@ -22,23 +22,23 @@ class SQLiteRoomDataAccessObject(RoomDataAccessObject):
                         number=roomData[1],
                         floor=roomData[2],
                         state=RoomState(roomData[3]),
-                        reservedDates=[],
-                        capacity=roomData[4],
-                        id=roomData[0]
+                        reservedDates=jsonpickle.decode(roomData[4]),
+                        capacity=roomData[5],
+                        id=uuid.UUID(roomData[0])
                     )
                 )
             return result
         except:
             raise f"Failed to fetch room list"
         finally:        
-            connection.close()  
+            connection.close() 
 
     def createRoom(self, newRoom: Room):
         connection = sqlite3.connect(DB_PATH)
         try:
             cursor = connection.cursor()
             command = f"INSERT INTO Room (id, number, floor, state, reservedDates, capacity) VALUES (?, ?, ?, ?, ?, ?)"
-            cursor.execute(command, (newRoom._id, newRoom.number, newRoom.floor, newRoom._state.value, jsonpickle.encode(newRoom.reservedDates), newRoom.capacity))
+            cursor.execute(command, (str(newRoom._id), newRoom.number, newRoom.floor, newRoom._state.value, jsonpickle.encode(newRoom.reservedDates), newRoom.capacity))
             connection.commit()
         except Exception as e:
             print("Failed to create a new room")
@@ -50,7 +50,7 @@ class SQLiteRoomDataAccessObject(RoomDataAccessObject):
         connection = sqlite3.connect(DB_PATH)
         try:
             cursor = connection.cursor()
-            command = f"DELETE FROM Room WHERE id = \"{room._id}\";"
+            command = f"DELETE FROM Room WHERE id = \"{str(room._id)}\";"
             cursor.execute(command)
             connection.commit()
         except Exception as e:
@@ -64,7 +64,7 @@ class SQLiteRoomDataAccessObject(RoomDataAccessObject):
         try:
             cursor = connection.cursor()
             updateCommand = f"UPDATE Room SET id = ?, number = ?, floor = ?, state = ?, reservedDates = ?, capacity = ? WHERE id = ?"
-            cursor.execute(updateCommand, (newRoom._id, newRoom.number, newRoom.floor, newRoom._state.value, jsonpickle.encode(newRoom.reservedDates), newRoom.capacity, newRoom._id))
+            cursor.execute(updateCommand, (str(newRoom._id), newRoom.number, newRoom.floor, newRoom._state.value, jsonpickle.encode(newRoom.reservedDates), newRoom.capacity, str(newRoom._id)))
             connection.commit()
         except Exception as e:
             print(f"Failed to update room: {newRoom}")

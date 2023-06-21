@@ -54,7 +54,8 @@ def testUpdateRoomWithoutEnoughParametersRaisesException():
 
 def testUpdateRoomAlreadyExistsSucceeds():
     repository = MockRoomsRepository()
-    repository.rooms.append(Room(1, 1))
+    room = Room(1, 1)
+    repository.rooms.append(room)
 
     user = Employee(
         name="Test",
@@ -63,13 +64,13 @@ def testUpdateRoomAlreadyExistsSucceeds():
         roles=[RoomAvailabilityManagement()]
     )
 
-    room = Room(1, 1)
+    room.number = 2
 
     useCase = UpdateRoomUseCase(repository)
 
     try:
         useCase.execute(user, room)
-        assert(True)
+        assert(repository.getRoomList()[0].number == 2)
     except:
         assert(False)
 

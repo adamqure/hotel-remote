@@ -14,7 +14,7 @@ def clearRoomsTable():
     try:
         cursor = connection.cursor()
         cursor.execute("DROP TABLE Room")
-        cursor.execute("CREATE TABLE \"Room\" (\"number\"	INTEGER NOT NULL UNIQUE, \"floor\"	INTEGER NOT NULL, \"state\"	INTEGER NOT NULL, \"reservedDates\"	TEXT, \"capacity\"	INTEGER NOT NULL, PRIMARY KEY(\"number\"))")
+        cursor.execute("CREATE TABLE \"Room\" (\"id\" TEXT NOT NULL UNIQUE, \"number\"	INTEGER NOT NULL, \"floor\"	INTEGER NOT NULL, \"state\"	INTEGER NOT NULL, \"reservedDates\"	TEXT, \"capacity\"	INTEGER NOT NULL, PRIMARY KEY(\"id\"))")
     except Exception as e:
         print("Failed to drop the Room table")
         print(e)
@@ -31,33 +31,14 @@ def newAvailableRoom():
             floor=1,
             state=RoomState.AVAILABLE
         )
-        command = f"INSERT INTO Room (number, floor, state, reservedDates, capacity) VALUES (?, ?, ?, ?, ?)"
-        cursor.execute(command, (newRoom.number, newRoom.floor, newRoom._state.value, jsonpickle.encode(newRoom.reservedDates), newRoom.capacity))
+        command = f"INSERT INTO Room (id, number, floor, state, reservedDates, capacity) VALUES (?, ?, ?, ?, ?, ?)"
+        cursor.execute(command, (str(newRoom._id), newRoom.number, newRoom.floor, newRoom._state.value, jsonpickle.encode(newRoom.reservedDates), newRoom.capacity))
         connection.commit()
     except Exception as e:
         print("Failed to create a new room")
         print(e)
     finally:
         connection.close()
-
-def testGetRoomByNumberExists(clearRoomsTable, newAvailableRoom):
-    roomNumber = 1
-    dao = SQLiteRoomDataAccessObject()
-    result = dao.getRoomByNumber(roomNumber)
-    assert(result.number == 1)
-    assert(result.floor == 1)
-    assert(result._state == RoomState.AVAILABLE)
-    assert(len(result.reservedDates) == 0)
-
-def testGetRoomByNumberDoesNotExist(clearRoomsTable):
-    roomNumber = 1
-    dao = SQLiteRoomDataAccessObject()
-
-    try:
-        result = dao.getRoomByNumber(roomNumber)
-        assert(False)
-    except:
-        assert(True)
 
 def testGetAllRoomsContainsAllRooms(clearRoomsTable, newAvailableRoom):
     dao = SQLiteRoomDataAccessObject()
@@ -100,7 +81,7 @@ def testCreateNewRoomSucceeds(clearRoomsTable):
     except:
         assert(False)
 
-def testDeleteExistingRoomSucceeds(clearRoomsTable, newAvailableRoom):
+def testDeleteExistingRoomSucceeds(clearRoomsTable):
     dao = SQLiteRoomDataAccessObject()
 
     room = Room(
@@ -110,6 +91,8 @@ def testDeleteExistingRoomSucceeds(clearRoomsTable, newAvailableRoom):
     )
 
     try:
+        dao.createRoom(room)
+        assert(len(dao.getAllRooms()) == 1)
         dao.deleteRoom(room)
         rooms = dao.getAllRooms()
         assert(len(rooms) == 0)

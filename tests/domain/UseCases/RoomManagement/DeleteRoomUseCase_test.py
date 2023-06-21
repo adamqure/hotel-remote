@@ -51,7 +51,8 @@ def testDeleteRoomWithoutEnoughParametersRaisesException():
 
 def testDeleteRoomAlreadyExistsIsDeleted():
     repository = MockRoomsRepository()
-    repository.rooms.append(Room(1, 1))
+    room = Room(1, 1)
+    repository.rooms.append(room)
 
     user = Employee(
         name="Test",
@@ -59,8 +60,6 @@ def testDeleteRoomAlreadyExistsIsDeleted():
         position="Test",
         roles=[RoomAvailabilityManagement()]
     )
-
-    room = Room(1, 1)
 
     useCase = DeleteRoomUseCase(repository)
 
