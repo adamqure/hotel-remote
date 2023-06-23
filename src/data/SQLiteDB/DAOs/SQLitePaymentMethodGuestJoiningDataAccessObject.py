@@ -12,7 +12,7 @@ class SQLitePaymentMethodGuestJoiningDataAccessObject(PaymentMethodGuestJoiningD
         try:
             cursor = connection.cursor()
             command = f"INSERT INTO PaymentMethodGuestJoining (guestID, paymentMethodID) VALUES (?, ?)"
-            cursor.execute(command, (guest._id, paymentMethod._id))
+            cursor.execute(command, (str(guest._id), str(paymentMethod._id)))
             connection.commit()
         except Exception as e:
             print(f"Failed to create join")
@@ -25,7 +25,7 @@ class SQLitePaymentMethodGuestJoiningDataAccessObject(PaymentMethodGuestJoiningD
         try:
             cursor = connection.cursor()
             command = f"DELETE FROM PaymentMethodGuestJoining WHERE guestID = ? AND paymentMethodID = ?"
-            cursor.execute(command, (guest._id, paymentMethod._id))
+            cursor.execute(command, (str(guest._id), str(paymentMethod._id)))
             connection.commit()
         except Exception as e:
             print(f"Failed to delete join")
@@ -37,8 +37,8 @@ class SQLitePaymentMethodGuestJoiningDataAccessObject(PaymentMethodGuestJoiningD
         connection = sqlite3.connect(DB_PATH)
         try:
             cursor = connection.cursor()
-            command = f"SELECT PaymentMethod.id as id, creditCardNumber, expirationMonth, expirationYear FROM PaymentMethodGuestJoining JOIN PaymentMethod ON PaymentMethodGuestJoining.paymentMethodID = PaymentMethod.id WHERE PaymentMethodGuestJoining.guestID = ?"
-            cursor.execute(command, (guest._id))
+            command = f"SELECT PaymentMethod.id as id, creditCardNumber, expirationMonth, expirationYear FROM PaymentMethodGuestJoining JOIN PaymentMethod ON PaymentMethodGuestJoining.paymentMethodID = PaymentMethod.id WHERE PaymentMethodGuestJoining.guestID = \"{str(guest._id)}\""
+            cursor.execute(command)
             
             dataObjects = cursor.fetchall()
             if len(dataObjects) == 0:
@@ -47,9 +47,9 @@ class SQLitePaymentMethodGuestJoiningDataAccessObject(PaymentMethodGuestJoiningD
             paymentMethodData = dataObjects[0]
             return PaymentMethod(
                 cardNumber=paymentMethodData[1],
-                expirationDate=datetime.datetime(year=paymentMethodData[3], month= paymentMethodData[2]),
+                expirationDate=datetime.datetime(year=paymentMethodData[3], month= paymentMethodData[2], day= 1),
                 billingInformation=None,
-                id=dataObjects[0]
+                id=paymentMethodData[0]
             )
         except Exception as e:
             print(f"Failed to get Payment Method for guest {guest}")

@@ -11,7 +11,7 @@ class PaymentMethod:
         if id == None:
             self._id = uuid.uuid4()
         else:
-            self._id = id
+            self._id = uuid.UUID(id)
 
     def processPayment(charge):
         pass
