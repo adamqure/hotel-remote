@@ -10,8 +10,8 @@ class SQLitePaymentMethodBillingInformationJoiningDataAccessObject(PaymentMethod
         connection = sqlite3.connect(DB_PATH)
         try:
             cursor = connection.cursor()
-            command = f"SELECT BillingInformation.id as id, fullName, streetAddress1, streetAddress2, city, state, zipCode FROM PaymentMethodBillingInformationJoining JOIN BillingInformation ON PaymentMethodBillingInformationJoining.billingInformationID = BillingInformation.id WHERE PaymentMethodBillingInformationJoining.paymentMethodID = ?"
-            cursor.execute(command, (paymentMethod._id))
+            command = f"SELECT BillingInformation.id as id, fullName, streetAddress1, streetAddress2, city, state, zipCode FROM PaymentMethodBillingInformationJoining JOIN BillingInformation ON PaymentMethodBillingInformationJoining.billingInformationID = BillingInformation.id WHERE PaymentMethodBillingInformationJoining.paymentMethodID = \"{str(paymentMethod._id)}\""
+            cursor.execute(command)
             dataObjects = cursor.fetchall()
 
             if len(dataObjects) == 0:
@@ -39,7 +39,7 @@ class SQLitePaymentMethodBillingInformationJoiningDataAccessObject(PaymentMethod
         try:
             cursor = connection.cursor()
             command = f"DELETE FROM PaymentMethodBillingInformationJoining WHERE paymentMethodID = ? AND billingInformationID = ?"
-            cursor.execute(command, (paymentMethod._id, billingInformation._id))
+            cursor.execute(command, (str(paymentMethod._id),str(billingInformation._id)))
             connection.commit()
         except Exception as e:
             print(f"Failed to delete join")
@@ -52,7 +52,7 @@ class SQLitePaymentMethodBillingInformationJoiningDataAccessObject(PaymentMethod
         try:
             cursor = connection.cursor()
             command = f"INSERT INTO PaymentMethodBillingInformationJoining (paymentMethodID, billingInformationID) VALUES (?, ?)"
-            cursor.execute(command, (paymentMethod._id, billingInformation._id))
+            cursor.execute(command, (str(paymentMethod._id), str(billingInformation._id)))
             connection.commit()
         except Exception as e:
             print(f"Failed to create join")

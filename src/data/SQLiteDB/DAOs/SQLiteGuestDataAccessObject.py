@@ -60,7 +60,7 @@ class SQLiteGuestDataAccessObject(GuestDataAccessObject):
         try:
             cursor = connection.cursor()
             updateCommand = f"UPDATE Guest SET id=?, name=?, emailAddress=? WHERE id=?"
-            cursor.execute(updateCommand, (str(guest._id), guest._name, guest._emailAddress, guest._id))
+            cursor.execute(updateCommand, (str(guest._id), guest._name, guest._emailAddress, str(guest._id)))
             connection.commit()
         except Exception as e:
             print(f"Failed to update guest: {guest}")
