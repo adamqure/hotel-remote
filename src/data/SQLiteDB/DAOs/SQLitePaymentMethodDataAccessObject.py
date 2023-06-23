@@ -10,7 +10,7 @@ class SQLitePaymentMethodDataAccessObject(PaymentMethodDataAccessObject):
         try:
             cursor = connection.cursor()
             command = f"UPDATE PaymentMethod SET id=?, creditCardNumber=?, expirationMonth=?, expirationYear=? WHERE id = ?"
-            cursor.execute(command, (str(paymentMethod._id), paymentMethod._creditCardNumber, paymentMethod._expirationDate.date().month, paymentMethod._expirationDate.date().year, paymentMethod._id))
+            cursor.execute(command, (str(paymentMethod._id), paymentMethod._creditCardNumber, paymentMethod._expirationDate.date().month, paymentMethod._expirationDate.date().year, str(paymentMethod._id)))
             connection.commit()
         except Exception as e:
             print(f"Failed to create the new payment method")
