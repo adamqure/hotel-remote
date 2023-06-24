@@ -1,10 +1,17 @@
+import uuid
 from domain.Entities.People.Person import Person
 
 class Guest(Person):
-    def __init__(self, name, emailAddress, paymentMethod, reservations = []):
+    def __init__(self, name, emailAddress, paymentMethod, reservations = [], id: uuid = None):
         self._paymentMethod = paymentMethod
         self.reservations = reservations
-        super().__init__(name, emailAddress)
+
+        if id == None:
+            self._id = uuid.uuid4()
+        else:
+            self._id = id
+
+        super().__init__(name, emailAddress, self._id)
 
     def makeReservation(reservation):
         pass

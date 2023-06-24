@@ -15,7 +15,7 @@ def clearRoomsTable():
     try:
         cursor = connection.cursor()
         cursor.execute("DROP TABLE Room")
-        cursor.execute("CREATE TABLE \"Room\" (\"number\"	INTEGER NOT NULL UNIQUE, \"floor\"	INTEGER NOT NULL, \"state\"	INTEGER NOT NULL, \"reservedDates\"	TEXT, \"capacity\"	INTEGER NOT NULL, PRIMARY KEY(\"number\"))")
+        cursor.execute("CREATE TABLE \"Room\" (\"id\" TEXT NOT NULL UNIQUE, \"number\"	INTEGER NOT NULL, \"floor\"	INTEGER NOT NULL, \"state\"	INTEGER NOT NULL, \"reservedDates\"	TEXT, \"capacity\"	INTEGER NOT NULL, PRIMARY KEY(\"id\"))")
     except Exception as e:
         print("Failed to drop the Room table")
         print(e)
@@ -32,8 +32,8 @@ def newAvailableRoom():
             floor=1,
             state=RoomState.AVAILABLE
         )
-        command = f"INSERT INTO Room (number, floor, state, reservedDates, capacity) VALUES (?, ?, ?, ?, ?)"
-        cursor.execute(command, (newRoom.number, newRoom.floor, newRoom._state.value, jsonpickle.encode(newRoom.reservedDates), newRoom.capacity))
+        command = f"INSERT INTO Room (id, number, floor, state, reservedDates, capacity) VALUES (?, ?, ?, ?, ?, ?)"
+        cursor.execute(command, (str(newRoom._id), newRoom.number, newRoom.floor, newRoom._state.value, jsonpickle.encode(newRoom.reservedDates), newRoom.capacity))
         connection.commit()
     except Exception as e:
         print("Failed to create a new room")
@@ -52,8 +52,8 @@ def roomWith4Capacity():
             state=RoomState.AVAILABLE,
             capacity=4
         )
-        command = f"INSERT INTO Room (number, floor, state, reservedDates, capacity) VALUES (?, ?, ?, ?, ?)"
-        cursor.execute(command, (newRoom.number, newRoom.floor, newRoom._state.value, jsonpickle.encode(newRoom.reservedDates), newRoom.capacity))
+        command = f"INSERT INTO Room (id, number, floor, state, reservedDates, capacity) VALUES (?, ?, ?, ?, ?, ?)"
+        cursor.execute(command, (str(newRoom._id), newRoom.number, newRoom.floor, newRoom._state.value, jsonpickle.encode(newRoom.reservedDates), newRoom.capacity))
         connection.commit()
     except Exception as e:
         print("Failed to create a new room")
@@ -73,8 +73,8 @@ def roomReservedOn02022023():
             reservedDates=[datetime(year=2023, month=2, day=2)],
             capacity=2
         )
-        command = f"INSERT INTO Room (number, floor, state, reservedDates, capacity) VALUES (?, ?, ?, ?, ?)"
-        cursor.execute(command, (newRoom.number, newRoom.floor, newRoom._state.value, jsonpickle.encode(newRoom.reservedDates), newRoom.capacity))
+        command = f"INSERT INTO Room (id, number, floor, state, reservedDates, capacity) VALUES (?, ?, ?, ?, ?, ?)"
+        cursor.execute(command, (str(newRoom._id), newRoom.number, newRoom.floor, newRoom._state.value, jsonpickle.encode(newRoom.reservedDates), newRoom.capacity))
         connection.commit()
     except Exception as e:
         print("Failed to create a new room")
@@ -140,7 +140,7 @@ def testDeleteNonexistingRoomRaisesException(clearRoomsTable):
     except:
         assert(True)
 
-def testDeleteExistingRoomSucceeds(clearRoomsTable, newAvailableRoom):
+def testDeleteExistingRoomSucceeds(clearRoomsTable):
     repository = ConcreteRoomsRepository()
 
     newRoom = Room(
@@ -148,6 +148,8 @@ def testDeleteExistingRoomSucceeds(clearRoomsTable, newAvailableRoom):
         floor=1,
         state=RoomState.AVAILABLE
     )
+
+    repository.createRoom(newRoom)
 
     try:
         repository.deleteRoom(newRoom)
@@ -170,7 +172,7 @@ def testUpdateNonexistingRoomRaisesException(clearRoomsTable):
     except:
         assert(True)
 
-def testUpdateExistingRoomSucceeds(clearRoomsTable, newAvailableRoom):
+def testUpdateExistingRoomSucceeds(clearRoomsTable):
     repository = ConcreteRoomsRepository()
 
     newRoom = Room(
@@ -179,9 +181,14 @@ def testUpdateExistingRoomSucceeds(clearRoomsTable, newAvailableRoom):
         state=RoomState.UNAVAILABLE
     )
 
+    repository.createRoom(newRoom)
+
+    newRoom.number = 2
+
     try:
         repository.updateRoom(newRoom)
         room = repository.getRoomList()[0]
+        assert(room._id == newRoom._id)
         assert(room.number == newRoom.number)
         assert(room._state == RoomState.UNAVAILABLE)
     except:
