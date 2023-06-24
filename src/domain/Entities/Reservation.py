@@ -1,7 +1,6 @@
 import uuid
 from domain.Entities.RoomCharge import RoomCharge
 from domain.Entities.States.ReservationState import ReservationState
-from domain.Entities.States.RoomState import RoomState
 
 class Reservation:
     def __init__(self, startDate, endDate, numberOfGuests, room, roomCharges = [], id: uuid = None, confirmation: str = None, state: ReservationState = ReservationState.DRAFT):
@@ -31,5 +30,8 @@ class Reservation:
     def calculateTotalInvoice(self):
         pass
 
-    def updateState(self, newState: RoomState):
+    def updateState(self, newState: ReservationState):
         self.state = newState
+
+    def __eq__(self, other):
+        return self._id == other._id
