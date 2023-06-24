@@ -16,3 +16,6 @@ class RoomCharge:
             self.date = datetime.now
         else:
             self.date = date
+
+    def __eq__(self, other):
+        return self._id == other._id

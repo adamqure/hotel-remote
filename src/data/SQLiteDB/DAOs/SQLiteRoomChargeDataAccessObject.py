@@ -36,7 +36,7 @@ class SQLiteRoomChargeDataAccessObject(RoomChargeDataAccessObject):
         try:
             cursor = connection.cursor()
             command = f"INSERT INTO RoomCharge (id, itemName, unitCost, creator, date, count) VALUES (?, ?, ?, ?, ?, ?)"
-            cursor.execute(command, (roomCharge._id, roomCharge.itemName, roomCharge.unitCost, roomCharge.creator, jsonpickle.encode(roomCharge.date), roomCharge.count))
+            cursor.execute(command, (str(roomCharge._id), roomCharge.itemName, roomCharge.unitCost, roomCharge.creator, jsonpickle.encode(roomCharge.date), roomCharge.count))
             connection.commit()
         except Exception as e:
             print("Failed to create a new Room Charge")
