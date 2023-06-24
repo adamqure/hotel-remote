@@ -1,4 +1,5 @@
 import sqlite3
+from uuid import UUID
 from data.DAOs.ReservationGuestJoiningDataAccessObject import ReservationGuestJoiningDataAccessObject
 from data.SQLiteDB.SQLiteDBConstants import DB_PATH
 from domain.Entities.People.Guest import Guest
@@ -11,8 +12,8 @@ class SQLiteReservationGuestJoiningDataAccessObject(ReservationGuestJoiningDataA
         connection = sqlite3.connect(DB_PATH)
         try:
             cursor = connection.cursor()
-            command = f"SELECT Guest.id as id, name, emailAddress FROM ReservationGuestJoining JOIN Guest ON ReservationGuestJoining.guestID = Guest.id WHERE reservationID = ?"
-            cursor.execute(command, (reservation._id))
+            command = f"SELECT Guest.id as id, name, emailAddress FROM ReservationGuestJoining JOIN Guest ON ReservationGuestJoining.guestID = Guest.id WHERE reservationID = \"{reservation._id}\""
+            cursor.execute(command)
             dataObjects = cursor.fetchall()
             if len(dataObjects) == 0:
                 raise f"Failed to find Guest that matches reservation {reservation}"
@@ -23,7 +24,7 @@ class SQLiteReservationGuestJoiningDataAccessObject(ReservationGuestJoiningDataA
                 emailAddress=guestData[2],
                 paymentMethod=None,
                 reservations=[],
-                id=guestData[0]
+                id=UUID(guestData[0])
             )
         except Exception as e:
             print(f"Failed to get Guest for reservation {reservation}")
@@ -35,8 +36,8 @@ class SQLiteReservationGuestJoiningDataAccessObject(ReservationGuestJoiningDataA
         connection = sqlite3.connect(DB_PATH)
         try:
             cursor = connection.cursor()
-            command = f"SELECT Reservation.id as id, startDate, endDate, numberOfGuests, state, confirmationNumber FROM ReservationGuestJoining JOIN Reservation ON ReservationGuestJoining.reservationID = Reservation.id WHERE guestID = ? AND (Reservation.state = 2 OR Reservation.state = 4 OR Reservation.state = 5)"
-            cursor.execute(command, (guest._id))
+            command = f"SELECT Reservation.id as id, startDate, endDate, numberOfGuests, state, confirmationNumber FROM ReservationGuestJoining JOIN Reservation ON ReservationGuestJoining.reservationID = Reservation.id WHERE guestID = \"{guest._id}\" AND (Reservation.state = 2 OR Reservation.state = 4 OR Reservation.state = 5)"
+            cursor.execute(command)
             dataObjects = cursor.fetchall()
             result: list[Reservation] = []
             for reservationData in dataObjects:
@@ -47,9 +48,9 @@ class SQLiteReservationGuestJoiningDataAccessObject(ReservationGuestJoiningDataA
                     numberOfGuests=reservationData[3],
                     room=None,
                     roomCharges=[],
-                    id=reservationData[0],
+                    id=UUID(reservationData[0]),
                     confirmation=reservationData[5],
-                    reservationData=ReservationState(reservationData[4])
+                    state=ReservationState(reservationData[4])
                     )
                 )
             return result
@@ -64,7 +65,7 @@ class SQLiteReservationGuestJoiningDataAccessObject(ReservationGuestJoiningDataA
         try:
             cursor = connection.cursor()
             command = f"INSERT INTO ReservationGuestJoining (guestID, reservationID) VALUES (?, ?)"
-            cursor.execute(command, (guest._id, reservation._id))
+            cursor.execute(command, (str(guest._id), str(reservation._id)))
             connection.commit()
         except Exception as e:
             print(f"Failed to delete join")
@@ -77,7 +78,7 @@ class SQLiteReservationGuestJoiningDataAccessObject(ReservationGuestJoiningDataA
         try:
             cursor = connection.cursor()
             command = f"DELETE FROM ReservationGuestJoining WHERE guestID = ? AND reservationID = ?"
-            cursor.execute(command, (guest._id, reservation._id))
+            cursor.execute(command, (str(guest._id), str(reservation._id)))
             connection.commit()
         except Exception as e:
             print(f"Failed to delete join")

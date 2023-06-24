@@ -9,6 +9,18 @@ from data.SQLiteDB.SQLiteDBConstants import DB_PATH
 from domain.Entities.PaymentMethod import PaymentMethod
 from domain.Entities.People.Guest import Guest
 
+@pytest.fixture
+def clearJoinTable():
+    connection = sqlite3.connect(DB_PATH)
+    try:
+        cursor = connection.cursor()
+        cursor.execute("DROP TABLE PaymentMethodGuestJoining")
+        cursor.execute("CREATE TABLE \"PaymentMethodGuestJoining\" (\"id\"	INTEGER NOT NULL UNIQUE, \"guestID\"	TEXT NOT NULL, \"paymentMethodID\"	TEXT NOT NULL UNIQUE, PRIMARY KEY(\"id\" AUTOINCREMENT))")
+    except Exception as e:
+        print("Failed to drop the Guest table")
+        print(e)
+    finally:
+        connection.close()
 
 @pytest.fixture
 def clearGuestTable():
