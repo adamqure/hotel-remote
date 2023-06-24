@@ -1,9 +1,11 @@
 import datetime
 import uuid
 
+from domain.Entities.BillingInformation import BillingInformation
+
 
 class PaymentMethod:
-    def __init__(self, cardNumber, expirationDate: datetime, billingInformation, id: uuid = None):
+    def __init__(self, cardNumber, expirationDate: datetime, billingInformation: BillingInformation, id: uuid = None):
         self._creditCardNumber = cardNumber
         self._expirationDate = expirationDate
         self._billingInformation = billingInformation
@@ -13,8 +15,5 @@ class PaymentMethod:
         else:
             self._id = uuid.UUID(id)
 
-    def processPayment(charge):
-        pass
-
-    def processRefund(credit):
-        pass
+    def getBillingInformation(self) -> BillingInformation:
+        return self._billingInformation

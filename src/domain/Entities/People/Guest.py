@@ -1,8 +1,9 @@
 import uuid
+from domain.Entities.PaymentMethod import PaymentMethod
 from domain.Entities.People.Person import Person
 
 class Guest(Person):
-    def __init__(self, name, emailAddress, paymentMethod, reservations = [], id: uuid = None):
+    def __init__(self, name, emailAddress, paymentMethod: PaymentMethod, reservations = [], id: uuid = None):
         self._paymentMethod = paymentMethod
         self.reservations = reservations
 

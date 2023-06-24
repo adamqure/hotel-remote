@@ -20,3 +20,9 @@ class RoomsRepository:
 
     def updateRoom(self, room: Room):
         pass
+
+    def makeRoomAvailable(self, room: Room):
+        pass
+
+    def makeRoomUnavailable(self, room: Room):
+        pass
