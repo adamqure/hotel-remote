@@ -32,3 +32,11 @@ class ConcreteRoomsRepository(RoomsRepository):
 
     def updateRoom(self, room: Room):
         self._dataSource.updateRoom(room)
+
+    def makeRoomAvailable(self, room: Room):
+        room.updateState(RoomState.AVAILABLE)
+        self._dataSource.updateRoom(room)
+
+    def makeRoomUnavailable(self, room: Room):
+        room.updateState(RoomState.UNAVAILABLE)
+        self._dataSource.updateRoom(room)
